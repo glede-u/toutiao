@@ -1,11 +1,12 @@
 <template>
-  <div id="app">
-    <router-view/>
+  <div>
+    首页
   </div>
 </template>
+
 <script>
 export default {
-  name: 'app',
+  name: 'homeIndex',
 
   data () {
     return {
@@ -15,6 +16,7 @@ export default {
   methods: {}
 }
 </script>
-<style lang="less">
+
+<style lang='less' scoped>
 
 </style>

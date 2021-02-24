@@ -1,22 +1,51 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: '/login',
+    name: 'login',
+    // redirect: '/login',
+    // 配置路由懒加载,@是 vue中设置的src根目录
+    component: () => import('@/views/login/index')
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    path: '/',
+    name: 'layout',
+    // redirect: '/login',
+    // 配置路由懒加载,@是 vue中设置的src根目录
+    component: () => import('@/views/layout/index'),
+    children: [
+      {
+        path: '',
+        name: 'home',
+        // redirect: '/login',
+        // 配置路由懒加载,@是 vue中设置的src根目录
+        component: () => import('@/views/home/index')
+      },
+      {
+        path: '/qa',
+        name: 'qa',
+        // redirect: '/login',
+        // 配置路由懒加载,@是 vue中设置的src根目录
+        component: () => import('@/views/qa/index')
+      },
+      {
+        path: '/video',
+        name: 'video',
+        // redirect: '/login',
+        // 配置路由懒加载,@是 vue中设置的src根目录
+        component: () => import('@/views/video/index')
+      },
+      {
+        path: '/my',
+        name: 'my',
+        // redirect: '/login',
+        // 配置路由懒加载,@是 vue中设置的src根目录
+        component: () => import('@/views/my/index')
+      }
+    ]
   }
 ]
 
