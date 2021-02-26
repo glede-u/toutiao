@@ -2,6 +2,7 @@
   <div class="layout-container">
     <!-- 路由出口 -->
    <router-view/>
+   <!-- 底部 tan栏 -->
   <van-tabbar class="layout-tabNar" route >
     <van-tabbar-item to="/" >
       <i slot="icon" class="iconfont toutiao-shouye"></i>
@@ -17,7 +18,7 @@
     </van-tabbar-item>
     <van-tabbar-item  to="/my" >
       <i slot="icon" class="iconfont toutiao-wode"></i>
-      <span class="text">我的</span>
+      <span class="text">{{$store.state.user? '我的':'未登陆'}}</span>
     </van-tabbar-item>
   </van-tabbar>
   </div>

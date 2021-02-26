@@ -1,6 +1,12 @@
 <template>
   <div class="login-container">
-    <van-nav-bar title="标题" class="page-nav-bar" />
+    <van-nav-bar title="标题" class="page-nav-bar" >
+       <van-icon v-if="$route.query.redirect"
+        slot="left"
+        name="cross"
+        @click="$router.back()"
+      />
+    </van-nav-bar>
     <!-- 表单区域 -->
     <van-form @submit="onSubmit" ref="loginForm">
       <!-- 手机号区域 -->
@@ -52,7 +58,7 @@
 // 导入请求模块
 import { login, sendSms } from '@/api/user'
 export default {
-  name: 'login',
+  name: 'loginIndex',
 
   data () {
     return {
@@ -90,9 +96,13 @@ export default {
         const { data } = await login(user)
         this.$store.commit('setUser', data.data)
         this.$toast.success('登录成功!')
+        // 跳转原来的页面,其中用传递query数据redirect进行跳转,如果找不到redirect 就跳转到首页
+        this.$router.push(this.$route.query.redirect || '/')
       } catch (err) {
         if (err.response.status === 400) {
-          this.$Toast.fail('登录失败!')
+          this.$toast.fail('登录失败!')
+        } else {
+          this.$toast.fail('登录失败! 稍后再试')
         }
       }
     },

@@ -14,7 +14,6 @@ const routes = [
     path: '/',
     name: 'layout',
     // redirect: '/login',
-    // 配置路由懒加载,@是 vue中设置的src根目录
     component: () => import('@/views/layout/index'),
     children: [
       {
