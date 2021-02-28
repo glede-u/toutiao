@@ -8,6 +8,8 @@ import 'vant/lib/index.css'
 import './styles/index.less'
 // 加载适配rem
 import 'amfe-flexible'
+// 加载dayjs
+import './utils/day'
 
 Vue.use(Vant)
 

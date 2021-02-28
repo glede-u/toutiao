@@ -26,27 +26,41 @@
        <articleList :channel='channels'></articleList>
        </van-tab>
       <div slot="nav-right" class="placeholder"></div>
-      <div slot="nav-right" class="hamburger-btn">
+      <div slot="nav-right" class="hamburger-btn" @click="isChannelShow=true">
         <i class="iconfont toutiao-gengduo"></i>
       </div>
     </van-tabs>
+    <!-- 编辑弹出层 -->
+    <van-popup
+      v-model="isChannelShow"
+      closeable
+      close-icon-position="top-left"
+      position="bottom"
+      close-icon='cross'
+      :style="{ height: '100%' }"
+    >
+    <channel-edit :my-channels='userChannels' :active='active'></channel-edit>
+    </van-popup>
   </div>
 </template>
 
 <script>
 import { getUserChannels } from '@/api/user'
 import articleList from './components/article-list'
+import channelEdit from './components/channel-edit'
 export default {
   name: 'homeIndex',
 
   data () {
     return {
       active: 0,
-      userChannels: []
+      userChannels: [],
+      isChannelShow: false
     }
   },
   components: {
-    articleList
+    articleList,
+    channelEdit
   },
   created () {
     this.loadUserChannels()
