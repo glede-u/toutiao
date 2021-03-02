@@ -9,6 +9,7 @@
         size="small"
         round
         icon="search"
+        to="/search"
         >搜索</van-button
       >
     </van-nav-bar>
@@ -18,15 +19,15 @@
     <!-- 通过 swipeable 属性可以开启滑动切换标签页。 -->
     <van-tabs class="channel-tabs" v-model="active" animated swipeable>
       <van-tab
-      v-for="channels in userChannels"
-      :key="channels.id"
-      :title="channels.name"
-       >
-       <!-- 对应文章内容 用组件显示对应的内容 -->
-       <articleList :channel='channels'></articleList>
-       </van-tab>
+        v-for="channels in userChannels"
+        :key="channels.id"
+        :title="channels.name"
+      >
+        <!-- 对应文章内容 用组件显示对应的内容 -->
+        <articleList :channel="channels"></articleList>
+      </van-tab>
       <div slot="nav-right" class="placeholder"></div>
-      <div slot="nav-right" class="hamburger-btn" @click="isChannelShow=true">
+      <div slot="nav-right" class="hamburger-btn" @click="isChannelShow = true">
         <i class="iconfont toutiao-gengduo"></i>
       </div>
     </van-tabs>
@@ -36,10 +37,14 @@
       closeable
       close-icon-position="top-left"
       position="bottom"
-      close-icon='cross'
+      close-icon="cross"
       :style="{ height: '100%' }"
     >
-    <channel-edit :my-channels='userChannels' :active='active'></channel-edit>
+      <channel-edit
+        :my-channels="userChannels"
+        :active="active"
+        @update-article="onUpdate"
+      ></channel-edit>
     </van-popup>
   </div>
 </template>
@@ -48,6 +53,8 @@
 import { getUserChannels } from '@/api/user'
 import articleList from './components/article-list'
 import channelEdit from './components/channel-edit'
+import { mapState } from 'vuex'
+import { getItem } from '@/utils/storage'
 export default {
   name: 'homeIndex',
 
@@ -58,6 +65,9 @@ export default {
       isChannelShow: false
     }
   },
+  computed: {
+    ...mapState(['user'])
+  },
   components: {
     articleList,
     channelEdit
@@ -67,13 +77,32 @@ export default {
   },
 
   methods: {
-    async loadUserChannels () {
+    async loadUserChannels  () {
       try {
-        const { data } = await getUserChannels()
-        this.userChannels = data.data.channels
+        let channel = []
+        // 已登录
+        if (this.user) {
+          const { data } = await getUserChannels()
+          channel = data.data.channels
+        } else {
+          // 未登陆 判断是否本地有数据
+          if (getItem('TOUTIAO_CHANNEL')) {
+            //    有，拿来使用
+            channel = getItem('TOUTIAO_CHANNEL')
+          } else {
+            // 没有 请求默认频道列表
+            const { data } = await getUserChannels()
+            channel = data.data.channels
+          }
+        }
+        this.userChannels = channel
       } catch (error) {
         this.$toast('获取频道列表失败')
       }
+    },
+    onUpdate (index, isChannelShow = true) {
+      this.active = index
+      this.isChannelShow = isChannelShow
     }
   }
 }

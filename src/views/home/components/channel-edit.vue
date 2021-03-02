@@ -13,6 +13,7 @@
         class="grid-item"
         v-for="(channel, index) in myChannels"
         :key="index"
+        @click='onChannelClick(channel, index)'
       >
         <van-icon v-show="isEdit && !fixedChannel.includes(channel.id)" name="clear" slot="icon" />
         <span slot="text" class="text" :class="{ active: index == active }">{{
@@ -38,7 +39,9 @@
   </div>
 </template>
 <script>
-import { getAllChannels } from '@/api/channels'
+import { getAllChannels, addUserchannel, deleteUserchannel } from '@/api/channels'
+import { mapState } from 'vuex'
+import { setItem } from '@/utils/storage'
 export default {
   name: 'channelEdit',
   props: {
@@ -66,6 +69,7 @@ export default {
     this.loadAllChannels()
   },
   computed: {
+    ...mapState(['user']),
     // 计算推荐频道 就是让全部频道删减掉我的频道 利用数组filter的方法 判断一个数组是否有某个item可以用find 方法
     recommentChannels () {
       return this.AllChannels.filter(channels => {
@@ -85,8 +89,53 @@ export default {
         this.$toast('获取全部推荐列表失败!')
       }
     },
-    onAddChannel (channel) {
+    onChannelClick (channel, index) {
+      // 编辑状态
+      if (this.isEdit) {
+        // 如果是推荐项,直接返回不处理
+        if (this.fixedChannel.includes(index)) return
+        // 处理删除选中前的选中项会改变选择状态的状态的问题
+        if (index <= this.active) {
+          this.$emit('update-article', this.active - 1, true)
+        }
+        // 根据删除index删除
+        this.myChannels.splice(index, 1)
+        // 数据持久化
+        this.deletechannel(channel, index)
+      } else {
+        // 未编辑状态
+        this.$emit('update-article', index, false)
+      }
+    },
+    async deletechannel (channel, index) {
+      if (this.user) {
+        // 已登陆状态,将数据更新到线上
+        try {
+          await deleteUserchannel(channel.id)
+        } catch (error) {
+          this.$toast('删除频道失败! 稍后再试', error)
+        }
+      } else {
+        // 未登陆将数据更新到本地存储
+        setItem('TOUTIAO_CHANNEL', this.myChannels)
+      }
+    },
+    async onAddChannel (channel) {
       this.myChannels.push(channel)
+      if (this.user) {
+        // 登陆状态 请求接口
+        try {
+          await addUserchannel({
+            id: channel.id, // 频道id
+            seq: this.myChannels.length // 序号,就是我的频道的数据length
+          })
+        } catch (error) {
+          this.$toast('添加频道失败! 稍后再试')
+        }
+      } else {
+        // 未登陆数据保存到本地存储
+        setItem('TOUTIAO_CHANNEL', this.myChannels)
+      }
     }
   }
 }

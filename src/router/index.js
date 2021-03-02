@@ -45,6 +45,12 @@ const routes = [
         component: () => import('@/views/my/index')
       }
     ]
+  },
+  {
+    path: '/search',
+    name: 'search',
+    // 配置路由懒加载,@是 vue中设置的src根目录
+    component: () => import('@/views/search/index')
   }
 ]
 
