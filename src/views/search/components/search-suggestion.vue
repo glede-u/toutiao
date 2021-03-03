@@ -2,10 +2,11 @@
   <div class="search-suggestion">
     <van-cell
       icon="search"
-      :title="text"
       v-for="(text,index) in suggestions"
       :key="index"
+      @click="$emit('search',text)"
     >
+    <div slot="title" v-html="highlight(text)"></div>
     </van-cell>
   </div>
 </template>
@@ -44,11 +45,27 @@ export default {
     async loadSearchSuggestion (q) {
       const { data } = await getSearchSuggestions(q)
       this.suggestions = data.data.options
+    },
+    // 处理联想建议高亮
+    highlight (text) {
+      const highlightStr = `<span class="active">${this.searchText}</span>`
+
+      // 正则表达式 // 中间的内容都会当作匹配字符来使用，而不是数据变量
+      // 如果需要根据数据变量动态的创建正则表达式，则手动 new RegExp
+      // RegExp 正则表达式构造函数
+      //    参数1：匹配模式字符串，它会根据这个字符串创建正则对象
+      //    参数2：匹配模式，要写到字符串中
+      const reg = new RegExp(this.searchText, 'gi')
+      return text.replace(reg, highlightStr)
     }
   }
 }
 </script>
 
 <style lang='less' scoped>
-
+.search-suggestion {
+  /deep/ span.active {
+    color: #3296fa;
+  }
+}
 </style>
