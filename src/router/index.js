@@ -12,7 +12,7 @@ const routes = [
   },
   {
     path: '/',
-    name: 'layout',
+    // name: 'layout',
     // redirect: '/login',
     component: () => import('@/views/layout/index'),
     children: [
@@ -51,6 +51,13 @@ const routes = [
     name: 'search',
     // 配置路由懒加载,@是 vue中设置的src根目录
     component: () => import('@/views/search/index')
+  },
+  {
+    path: '/article/:articleId',
+    name: 'article',
+    // 配置路由懒加载,@是 vue中设置的src根目录
+    component: () => import('@/views/article/index'),
+    props: true // 开启props传参
   }
 ]
 

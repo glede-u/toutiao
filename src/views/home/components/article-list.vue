@@ -10,7 +10,7 @@
         error-text="请求失败，点击重新加载"
         @load="onLoad"
       >
-      <article-item :article='item' v-for="(item,index) in list" :key="index" ></article-item>
+      <article-item :article='item' v-for="(item,index) in list" :key="index"  ></article-item>
         <!-- <van-cell v-for="(item,index) in list" :key="index" :title="item.title" /> -->
       </van-list>
     </van-pull-refresh>
