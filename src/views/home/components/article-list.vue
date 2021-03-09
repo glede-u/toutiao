@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 <template >
-  <div class="article-list">
+  <div class="article-list" ref="article-list">
     <van-pull-refresh v-model="isLoading" :success-text="isSuccessText" @refresh="onRefresh">
       <van-list
         v-model="loading"
@@ -20,6 +20,7 @@
 <script>
 import { getArticle } from '@/api/article'
 import articleItem from '@/components/article-item/index'
+import { debounce } from 'lodash'
 export default {
   name: 'articleList',
   props: {
@@ -27,6 +28,17 @@ export default {
       required: true,
       type: Object
     }
+  },
+  mounted () {
+    // 记住滚动位置,进入详情页,返回articleList页面还是原来的位置
+    const articleList = this.$refs['article-list']
+    articleList.onscroll = debounce(() => {
+      this.scrollTop = articleList.scrollTop
+    }, 50)
+  },
+  activated () {
+    // 从缓存中被激活
+    this.$refs['article-list'].scrollTop = this.scrollTop
   },
   data () {
     return {
@@ -36,7 +48,8 @@ export default {
       error: false,
       timestamp: null,
       isLoading: false,
-      isSuccessText: '刷新成功'
+      isSuccessText: '刷新成功',
+      scrollTop: 0
     }
   },
   components: {

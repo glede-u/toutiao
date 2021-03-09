@@ -1,20 +1,24 @@
 <template>
   <div id="app">
-    <router-view/>
+    <!-- 加缓存 -->
+    <keep-alive :include="['LayoutIndex']">
+      <router-view />
+    </keep-alive>
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'app',
+  computed: {
+    ...mapState(['cachePages'])
+  },
 
   data () {
-    return {
-    }
+    return {}
   },
 
   methods: {}
 }
 </script>
-<style lang="less">
-
-</style>
+<style lang="less"></style>

@@ -50,3 +50,31 @@ export const deleteFollow = target => {
     url: `/app/v1_0/user/followings/${target}`
   })
 }
+
+// 获取用户信息
+export const getUserProfile = target => {
+  return request({
+    method: 'GET',
+    url: '/app/v1_0/user/profile'
+  })
+}
+
+// 更新用户信息
+export const updateUserProfile = data => {
+  return request({
+    method: 'PATCH',
+    url: '/app/v1_0/user/profile',
+    data
+  })
+}
+
+/**
+ * 更新用户头像
+ */
+export function updateUserPhoto (data) {
+  return request({
+    method: 'PATCH',
+    url: '/app/v1_0/user/photo',
+    data
+  })
+}

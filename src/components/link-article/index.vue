@@ -13,8 +13,7 @@ export default {
   name: 'linkArticle',
   props: {
     value: {
-      type: [Number, String, Object],
-      required: true
+      type: [Number, String, Object]
     },
     articleId: {
       type: [Number, String, Object],

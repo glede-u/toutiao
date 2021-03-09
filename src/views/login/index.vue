@@ -4,7 +4,7 @@
        <van-icon v-if="$route.query.redirect"
         slot="left"
         name="cross"
-        @click="$router.back()"
+        @click="$router.push($route.query.redirect || '/')"
       />
     </van-nav-bar>
     <!-- 表单区域 -->
@@ -96,6 +96,8 @@ export default {
         const { data } = await login(user)
         this.$store.commit('setUser', data.data)
         this.$toast.success('登录成功!')
+        // 清除 LayoutIndex 缓存
+        this.$store.commit('removeCachePage', 'LayoutIndex')
         // 跳转原来的页面,其中用传递query数据redirect进行跳转,如果找不到redirect 就跳转到首页
         this.$router.push(this.$route.query.redirect || '/')
       } catch (err) {

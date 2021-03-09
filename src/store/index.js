@@ -8,7 +8,8 @@ export default new Vuex.Store({
     // 存储本地存储信息
     // user: null
     // user: JSON.parse(window.localStorage.getItem('token'))
-    user: getItem(token)
+    user: getItem(token),
+    cachePages: ['LayoutIndex'] // 记住需要缓存的组件
   },
   mutations: {
     setUser (state, data) {
@@ -16,10 +17,22 @@ export default new Vuex.Store({
       // 防止数据丢失,把数据保存到本地存储中
       // window.localStorage.setItem('token', JSON.stringify(data))
       setItem(token, data)
+    },
+    // 添加缓存页面
+    addCachePage (state, pageName) {
+      if (!state.cachePages.includes(pageName)) {
+        state.cachePages.push(pageName)
+      }
+    },
+    // 移除缓存页面
+    removeCachePage (state, pageName) {
+      const idx = state.cachePages.indexOf(pageName)
+      if (idx !== -1) {
+        // console.log(this.state.cachePages === state.cachePages)
+        state.cachePages.splice(idx, 1)
+      }
     }
   },
-  actions: {
-  },
-  modules: {
-  }
+  actions: {},
+  modules: {}
 })
